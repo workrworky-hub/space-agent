@@ -40,6 +40,14 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <!-- Prefetch post-login assets during idle time so the first dashboard/space load is fast -->
+    <link rel="prefetch" href="/mod/_core/dashboard/view.html" as="document" />
+    <link rel="prefetch" href="/mod/_core/dashboard/dashboard.css" as="style" />
+    <link rel="prefetch" href="/mod/_core/spaces/view.html" as="document" />
+    <link rel="prefetch" href="/mod/_core/spaces/spaces.css" as="style" />
+    <link rel="prefetch" href="/mod/_core/spaces/widget-content.css" as="style" />
+    <link rel="prefetch" href="/mod/_core/framework/css/colors.css" as="style" />
+    <link rel="prefetch" href="/mod/_core/framework/css/index.css" as="style" />
     <!-- space-backdrop.css removed: Lument uses an inline ambient gradient (html::before) instead -->
     <style>
       :root {

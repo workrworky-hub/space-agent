@@ -26,8 +26,12 @@ export async function importComponent(path, targetElement) {
         throw new Error("Target element is required");
       }
 
-    // Show loading indicator
-    targetElement.innerHTML = '<div class="loading"></div>';
+    // Show loading indicator only when not already cached (avoids blank flash on SPA navigations)
+    if (!componentCache[applyModuleResolution(
+      path.startsWith("/") ? path : (path.startsWith("components/") ? path : "components/" + path)
+    )]) {
+      targetElement.innerHTML = '<div class="loading"></div>';
+    }
 
     // full component url
     const componentUrl = applyModuleResolution(
@@ -146,7 +150,7 @@ export async function importComponent(path, targetElement) {
             const promise = new Promise((resolve, reject) => {
               script.onload = resolve;
               script.onerror = reject;
-              setTimeout(resolve, 500); // Fallback to prevent hang
+              setTimeout(resolve, 150); // Fallback to prevent hang
             });
             loadPromises.push(promise);
           }
@@ -163,7 +167,7 @@ export async function importComponent(path, targetElement) {
           const promise = new Promise((resolve, reject) => {
             clone.onload = resolve;
             clone.onerror = reject;
-            setTimeout(resolve, 500); // Fallback to prevent hang
+            setTimeout(resolve, 150); // Fallback to prevent hang
           });
           loadPromises.push(promise);
         }

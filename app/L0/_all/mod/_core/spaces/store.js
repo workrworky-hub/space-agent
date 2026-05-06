@@ -4566,9 +4566,8 @@ const spacesModel = {
   },
 
   async loadCurrentSpace(spaceId) {
-    await this.flushCurrentSpaceMetaSave({
-      suppressErrors: true
-    });
+    // Flush without awaiting so entering a space isn't blocked by a pending save
+    void this.flushCurrentSpaceMetaSave({ suppressErrors: true });
     this.loadingSpace = true;
     this.widgetLoadToken += 1;
     const loadToken = this.widgetLoadToken;
