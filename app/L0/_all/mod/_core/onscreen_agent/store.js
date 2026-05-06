@@ -1445,10 +1445,10 @@ const model = {
     const statusText = typeof this.status === "string" ? this.status.trim() : "";
 
     if (!statusText || shouldHideComposerStatus(statusText)) {
-      return "Message Space Agent...";
+      return "Message Lument...";
     }
 
-    return statusText === "Ready." ? "Ready. Message Space Agent..." : statusText;
+    return statusText === "Ready." ? "Ready. Message Lument..." : statusText;
   },
 
   reportError(context, error, options = {}) {

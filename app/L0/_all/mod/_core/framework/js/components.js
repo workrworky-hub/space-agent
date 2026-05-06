@@ -146,6 +146,7 @@ export async function importComponent(path, targetElement) {
             const promise = new Promise((resolve, reject) => {
               script.onload = resolve;
               script.onerror = reject;
+              setTimeout(resolve, 500); // Fallback to prevent hang
             });
             loadPromises.push(promise);
           }
@@ -162,6 +163,7 @@ export async function importComponent(path, targetElement) {
           const promise = new Promise((resolve, reject) => {
             clone.onload = resolve;
             clone.onerror = reject;
+            setTimeout(resolve, 500); // Fallback to prevent hang
           });
           loadPromises.push(promise);
         }

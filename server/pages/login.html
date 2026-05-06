@@ -3,36 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="application-name" content="Space Agent" />
-    <meta name="apple-mobile-web-app-title" content="Space Agent" />
-    <meta name="theme-color" content="#050816" />
+    <meta name="application-name" content="Lument" />
+    <meta name="apple-mobile-web-app-title" content="Lument" />
+    <meta name="theme-color" content="#05060c" />
     <meta
       name="description"
-      content="Browser-first AI agent runtime for building your own AI spaces, tools, and workflows directly in the browser."
+      content="Lument — a browser-first AI runtime for building your own spaces, tools, and workflows."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Space Agent" />
-    <meta property="og:title" content="Space Agent | Browser-First AI Agent Runtime" />
+    <meta property="og:site_name" content="Lument" />
+    <meta property="og:title" content="Lument | Browser-First AI Runtime" />
     <meta
       property="og:description"
-      content="Browser-first AI agent runtime for building your own AI spaces, tools, and workflows directly in the browser."
+      content="Lument — a browser-first AI runtime for building your own spaces, tools, and workflows."
     />
     <meta property="og:url" content="https://space-agent.ai/" />
     <meta property="og:image" content="https://space-agent.ai/pages/res/readme-banner.webp" />
     <meta property="og:image:type" content="image/webp" />
     <meta property="og:image:width" content="1774" />
     <meta property="og:image:height" content="887" />
-    <meta property="og:image:alt" content="Space Agent banner" />
+    <meta property="og:image:alt" content="Lument banner" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Space Agent | Browser-First AI Agent Runtime" />
+    <meta name="twitter:title" content="Lument | Browser-First AI Runtime" />
     <meta
       name="twitter:description"
-      content="Browser-first AI agent runtime for building your own AI spaces, tools, and workflows directly in the browser."
+      content="Lument — a browser-first AI runtime for building your own spaces, tools, and workflows."
     />
     <meta name="twitter:url" content="https://space-agent.ai/" />
     <meta name="twitter:image" content="https://space-agent.ai/pages/res/readme-banner.webp" />
-    <meta name="twitter:image:alt" content="Space Agent banner" />
-    <title>Login | Space Agent</title>
+    <meta name="twitter:image:alt" content="Lument banner" />
+    <title>Sign in · Lument</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -40,7 +40,7 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="/pages/res/space-backdrop.css" />
+    <!-- space-backdrop.css removed: Lument uses an inline ambient gradient (html::before) instead -->
     <style>
       :root {
         color-scheme: dark;
@@ -114,50 +114,7 @@
         overflow-y: auto;
       }
 
-      @keyframes login-fadein {
-        from { opacity: 0; }
-        to   { opacity: 1; }
-      }
-
-      @keyframes login-fadeup {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-
-      .intro-art {
-        animation: login-fadein 1.35s ease-out both;
-        animation-delay: 0ms;
-      }
-
-      h1 {
-        animation: login-fadeup 1.35s ease-out both;
-        animation-delay: 330ms;
-      }
-
-      .intro-copy {
-        animation: login-fadeup 1.35s ease-out both;
-        animation-delay: 600ms;
-      }
-
-      .login-panel {
-        animation: login-fadeup 0.7s ease-out both;
-        animation-delay: 1150ms;
-      }
-
-      .shell-footer {
-        animation: login-fadeup 0.7s ease-out both;
-        animation-delay: 1320ms;
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .intro-art,
-        h1,
-        .intro-copy,
-        .login-panel,
-        .shell-footer {
-          animation: none;
-        }
-      }
+      /* Lument: animations removed — content is visible on first paint, no staggered delays */
 
       .shell {
         position: relative;
@@ -910,42 +867,258 @@
         }
       }
     </style>
+
+    <!-- Lument premium login overrides -->
+    <style>
+      :root {
+        --lument-ink: #05060c;
+        --lument-ink-2: #0a0d18;
+        --lument-accent: #c8b88a;
+        --lument-accent-soft: rgba(200, 184, 138, 0.18);
+        --lument-glass: rgba(12, 16, 28, 0.62);
+        --lument-glass-border: rgba(200, 184, 138, 0.14);
+        --lument-text: #f4f0e6;
+        --lument-text-soft: rgba(244, 240, 230, 0.62);
+      }
+      html, body { background: #04050b; color: var(--lument-text); }
+      body.space-theme-canvas { background: #04050b !important; }
+
+      /* Layered ambient — soft warm spotlight on the right (where the login card
+         sits), cool depth on the left, subtle vignette, all motionless. */
+      html::before {
+        content: ""; position: fixed; inset: 0; z-index: -10; pointer-events: none;
+        background:
+          /* Warm key light behind the login card */
+          radial-gradient(800px 700px at 78% 38%, rgba(200, 184, 138, 0.16) 0%, rgba(200, 184, 138, 0.04) 35%, transparent 65%),
+          /* Cool fill light on the brand/sigil side */
+          radial-gradient(900px 800px at 18% 28%, rgba(140, 178, 255, 0.10) 0%, transparent 55%),
+          /* Deep accent glow at the bottom for richness */
+          radial-gradient(1200px 900px at 50% 115%, rgba(108, 80, 178, 0.10) 0%, transparent 60%),
+          /* Vertical ink gradient for depth */
+          linear-gradient(180deg, #0b0e1a 0%, #06080f 50%, #03040a 100%);
+      }
+      /* Vignette to focus attention toward center */
+      html::after {
+        content: ""; position: fixed; inset: 0; z-index: -9; pointer-events: none;
+        background:
+          radial-gradient(ellipse 120% 90% at 50% 50%, transparent 50%, rgba(0,0,0,0.45) 100%);
+      }
+      /* Fine grain layer on the body to add tactile premium feel */
+      body.space-theme-canvas::after {
+        content: ""; position: fixed; inset: 0; z-index: -8; pointer-events: none;
+        opacity: 0.04; mix-blend-mode: overlay;
+        background-image:
+          radial-gradient(rgba(255,255,255,.8) 1px, transparent 1px),
+          radial-gradient(rgba(255,255,255,.5) 1px, transparent 1px);
+        background-size: 3px 3px, 5px 5px;
+        background-position: 0 0, 1px 2px;
+      }
+
+      /* Hero typography — refined, less "spacey", more editorial */
+      .lument-eyebrow {
+        margin: 0 0 0.65rem;
+        font: 500 11px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: var(--lument-text-soft);
+      }
+      .intro-title h1 {
+        font: 300 clamp(3rem, 7vw, 5.25rem)/0.95 "Cormorant Garamond", "Source Serif Pro", "Iowan Old Style", Georgia, "Times New Roman", serif;
+        letter-spacing: -0.02em;
+        margin: 0;
+        background: linear-gradient(180deg, #fbf6e6 0%, #d6c79a 70%, var(--lument-accent) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 28px rgba(200, 184, 138, 0.08);
+      }
+      .intro-copy {
+        color: var(--lument-text-soft);
+        font: 400 clamp(0.95rem, 1.2vw, 1.05rem)/1.7 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: 0.005em;
+      }
+
+      /* Login panel — glass card with hairline gold border */
+      .login-panel {
+        background: var(--lument-glass) !important;
+        border: 1px solid var(--lument-glass-border) !important;
+        border-radius: 18px !important;
+        backdrop-filter: blur(22px) saturate(140%);
+        -webkit-backdrop-filter: blur(22px) saturate(140%);
+        box-shadow:
+          0 1px 0 rgba(255,255,255,0.04) inset,
+          0 30px 80px -30px rgba(0,0,0,0.7),
+          0 0 0 1px rgba(200,184,138,0.04);
+        padding: clamp(22px, 3vw, 30px) !important;
+      }
+
+      .login-panel label > span {
+        color: var(--lument-text-soft) !important;
+        font-size: 11px !important;
+        letter-spacing: 0.18em !important;
+        text-transform: uppercase !important;
+      }
+      .login-panel input[type="text"],
+      .login-panel input[type="password"] {
+        background: rgba(255,255,255,0.025) !important;
+        border: 1px solid rgba(200,184,138,0.12) !important;
+        border-radius: 10px !important;
+        color: var(--lument-text) !important;
+        padding: 12px 14px !important;
+        font-size: 14px !important;
+        transition: border-color .18s ease, background-color .18s ease;
+      }
+      .login-panel input:focus {
+        outline: none !important;
+        border-color: var(--lument-accent) !important;
+        background: rgba(200,184,138,0.04) !important;
+        box-shadow: 0 0 0 3px var(--lument-accent-soft) !important;
+      }
+
+      .login-panel .primary-button,
+      .login-panel .secondary-button {
+        border-radius: 12px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.06em !important;
+        padding: 13px 18px !important;
+        transition: transform .12s ease, box-shadow .18s ease, background .18s ease !important;
+      }
+      .login-panel .primary-button {
+        background: linear-gradient(180deg, #d8c89c 0%, #b9a877 100%) !important;
+        color: #1a1408 !important;
+        border: 1px solid rgba(200,184,138,0.6) !important;
+        box-shadow: 0 10px 30px -12px rgba(200,184,138,0.45);
+      }
+      .login-panel .primary-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 36px -12px rgba(200,184,138,0.6);
+      }
+      .login-panel .secondary-button {
+        background: rgba(255,255,255,0.03) !important;
+        color: var(--lument-text) !important;
+        border: 1px solid rgba(200,184,138,0.22) !important;
+      }
+      .login-panel .secondary-button:hover {
+        background: rgba(200,184,138,0.06) !important;
+        border-color: rgba(200,184,138,0.42) !important;
+      }
+
+      .login-separator {
+        color: var(--lument-text-soft) !important;
+        font-size: 10px !important;
+        letter-spacing: 0.32em !important;
+        text-transform: uppercase !important;
+      }
+      .secondary-link.run-options-trigger {
+        color: var(--lument-text-soft) !important;
+        border-bottom: 1px dashed rgba(200,184,138,0.2);
+      }
+      .secondary-link.run-options-trigger:hover {
+        color: var(--lument-accent) !important;
+        border-bottom-color: var(--lument-accent);
+      }
+
+      /* Footer + public links — quieter */
+      .public-link { opacity: 0.55; transition: opacity .18s ease; }
+      .public-link:hover { opacity: 1; }
+
+      /* Lument sigil — replaces the astronaut avatar */
+      .lument-sigil-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .lument-sigil {
+        width: clamp(96px, 14vw, 150px);
+        height: auto;
+        display: block;
+        filter: drop-shadow(0 0 24px rgba(200, 184, 138, 0.18));
+      }
+
+      /* Freeze the heavy space-backdrop motion (stars + trails). The static
+         layers stay for ambience; the constant animation is what made the
+         page feel busy and consume CPU. */
+      .space-backdrop,
+      .space-backdrop * {
+        animation: none !important;
+        transition: none !important;
+      }
+      .space-backdrop-trails { display: none !important; }
+      .intro-astronaut { animation: none !important; transform: none !important; }
+
+      /* Lument intro: sigil + wordmark, centered, no tagline. */
+      .lument-intro-clean {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .lument-mark {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.1rem;
+      }
+      .lument-mark .lument-sigil {
+        width: clamp(108px, 16vw, 168px);
+      }
+      .lument-wordmark {
+        margin: 0;
+        font: 300 clamp(2.8rem, 7vw, 4.75rem)/0.95
+          "Cormorant Garamond", "Source Serif Pro", "Iowan Old Style", Georgia, "Times New Roman", serif;
+        letter-spacing: -0.025em;
+        background: linear-gradient(180deg, #fbf6e6 0%, #e2d4a6 55%, #b9a877 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 36px rgba(200, 184, 138, 0.14);
+      }
+      /* Sleek hairline divider under the wordmark */
+      .lument-wordmark::after {
+        content: "";
+        display: block;
+        width: clamp(64px, 12vw, 96px);
+        height: 1px;
+        margin: 0.85rem auto 0;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(200, 184, 138, 0.55) 50%,
+          transparent 100%
+        );
+        box-shadow: 0 0 8px rgba(200, 184, 138, 0.22);
+      }
+    </style>
   </head>
   <body class="space-theme-canvas">
-    <div class="space-backdrop" data-space-backdrop aria-hidden="true">
-      <div class="space-backdrop-layer space-backdrop-glow"></div>
-      <div class="space-backdrop-layer space-backdrop-stars space-backdrop-stars-deep"></div>
-      <div class="space-backdrop-layer space-backdrop-stars space-backdrop-stars-far"></div>
-      <div class="space-backdrop-layer space-backdrop-stars space-backdrop-stars-mid"></div>
-      <div class="space-backdrop-layer space-backdrop-stars space-backdrop-stars-near"></div>
-      <div class="space-backdrop-layer space-backdrop-stars space-backdrop-stars-close"></div>
-      <div class="space-backdrop-trails">
-        <div class="space-backdrop-trail" data-space-backdrop-trail></div>
-        <div class="space-backdrop-trail" data-space-backdrop-trail></div>
-      </div>
-    </div>
+    <!-- Heavy starfield + drifting trails removed for Lument: 10 DOM layers with will-change
+         transforms and a setTimeout/rAF trail spawner are gone. The ambient look comes from
+         the inline html::before/::after gradient + grain in <head>. -->
     <main class="shell">
-      <section class="intro" aria-label="Space Agent overview">
-        <div id="intro-floating-cluster" class="intro-floating-cluster">
-          <div id="intro-title" class="intro-title">
-            <h1>Space Agent</h1>
+      <section class="intro lument-intro-clean" aria-label="Lument">
+        <div class="lument-mark">
+          <div class="intro-art lument-sigil-wrap" aria-hidden="true">
+            <svg class="lument-sigil" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="lument-sigil-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%"  stop-color="#fbf6e6" />
+                  <stop offset="55%" stop-color="#d6c79a" />
+                  <stop offset="100%" stop-color="#b9a877" />
+                </linearGradient>
+                <radialGradient id="lument-sigil-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%"  stop-color="rgba(200,184,138,0.35)" />
+                  <stop offset="60%" stop-color="rgba(200,184,138,0.06)" />
+                  <stop offset="100%" stop-color="rgba(200,184,138,0)" />
+                </radialGradient>
+              </defs>
+              <circle cx="60" cy="60" r="58" fill="url(#lument-sigil-glow)" />
+              <circle cx="60" cy="60" r="42" fill="none" stroke="url(#lument-sigil-grad)" stroke-width="1.2" opacity="0.85" />
+              <circle cx="60" cy="60" r="30" fill="none" stroke="url(#lument-sigil-grad)" stroke-width="0.8" opacity="0.55" />
+              <line x1="60" y1="22" x2="60" y2="98" stroke="url(#lument-sigil-grad)" stroke-width="1" opacity="0.7" />
+              <circle cx="60" cy="60" r="3" fill="url(#lument-sigil-grad)" />
+            </svg>
           </div>
-          <div class="intro-art" aria-hidden="true">
-            <img
-              id="intro-astronaut"
-              class="intro-astronaut"
-              src="/pages/res/astronaut_no_bg.webp"
-              alt=""
-              decoding="async"
-              draggable="false"
-            />
-          </div>
+          <h1 class="lument-wordmark">Lument</h1>
         </div>
-        <p class="intro-copy">
-          Free and open-source AI agent<br />
-          that builds your space.<br />
-          Right in the browser.
-        </p>
       </section>
 
       <section class="login-panel" aria-label="Login form" data-space-browser-compat-hide-on-fail>
@@ -982,7 +1155,7 @@
               Guest accounts are temporary and may be removed any time.
             </span>
             </p>
-            <button id="submit-button" class="secondary-button" type="submit">Enter your Space</button>
+            <button id="submit-button" class="secondary-button" type="submit">Enter Lument</button>
           </form>
           <div id="guest-option-group">
             <div class="login-separator">or</div>
@@ -1016,7 +1189,7 @@
       ></section>
 
       <div class="shell-footer">
-        <nav class="public-links" aria-label="Space Agent links">
+        <nav class="public-links" aria-label="Lument links">
           <ul class="public-links-list">
             <li>
               <a
@@ -1177,7 +1350,8 @@
         </div>
       </section>
     </div>
-    <script src="/pages/res/space-backdrop.js"></script>
+    <!-- space-backdrop.js removed: no backdrop element on the page anymore.
+         The login script uses optional chaining (window.SpaceBackdrop?.install?.) so this is safe. -->
     <script src="/pages/res/browser-compat.js"></script>
     <script>
       (async function () {
@@ -1508,11 +1682,13 @@
         usernameInput.readOnly = isGuestReady;
         passwordInput.readOnly = isGuestReady;
         passwordInput.type = isGuestReady ? "text" : "password";
-        submitButton.textContent = isGuestReady ? "Continue" : "Enter your Space";
+        submitButton.textContent = isGuestReady ? "Continue" : "Enter Lument";
         submitButton.classList.toggle("primary-button", isGuestReady);
         submitButton.classList.toggle("secondary-button", !isGuestReady);
         fieldNote.hidden = !isGuestReady;
-        guestOptionGroup.hidden = !allowLogin || isGuestReady || !allowGuestUsers;
+        // Lument: keep "Use Guest Account" visible even when a guest is pre-filled,
+        // so users can always start a fresh session from the login screen.
+        guestOptionGroup.hidden = !allowLogin || !allowGuestUsers;
         syncButtonState(false);
       }
 

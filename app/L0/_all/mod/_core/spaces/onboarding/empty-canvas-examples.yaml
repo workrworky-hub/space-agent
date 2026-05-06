@@ -95,6 +95,24 @@ examples:
         "crypto-dashboard/btc-vs-sp500.yaml",
         "crypto-dashboard/crypto-news-feed.yaml"
       ])
+  - text: Ontology
+    kind: widget
+    icon: schema
+    color: "#79edd8"
+    code: |
+      const currentSpace = helpers.getSpaceRuntime().current
+      const spacesRuntime = helpers.getSpacesRuntime()
+      const shouldRenameSpace = currentSpace && !String(currentSpace.title || "").trim()
+      if (shouldRenameSpace && currentSpace?.id) {
+        await spacesRuntime.saveSpaceMeta({ id: currentSpace.id, title: example.text, refresh: false })
+      }
+      await helpers.installOnboardingExampleWidget("ontology-mini.yaml")
+  - text: Clock
+    kind: widget
+    icon: schedule
+    color: "#79edd8"
+    code: |
+      await helpers.installOnboardingExampleWidget("clock.yaml")
   - text: Check documentation
     prompt: >
       Do the following in order. 1. Load the documentation skill. 2. When it is

@@ -1,0 +1,204 @@
+cols: 5
+id: ontology-mini
+name: Ontology (mini)
+renderer: |-
+  async (parent) => {
+      parent.style.cssText = `
+        all: initial;
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #e8f6f2;
+        border-radius: 18px;
+        background: radial-gradient(circle at 30% 20%, #14304d 0%, #0a1424 70%);
+        overflow: hidden;
+        user-select: none;
+      `
+
+      const style = document.createElement("style")
+      style.textContent = `
+        .om-root { position: absolute; inset: 0; display: flex; flex-direction: column; }
+        .om-bar  { display: flex; align-items: center; gap: 8px; padding: 8px 12px; font-size: 11px; opacity: .8; }
+        .om-bar input { flex: 1; min-width: 0; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); color: inherit; border-radius: 8px; padding: 5px 8px; font: inherit; outline: none; }
+        .om-bar button { background: rgba(121,237,216,.18); border: 1px solid rgba(121,237,216,.35); color: #79edd8; border-radius: 8px; padding: 5px 10px; font: inherit; cursor: pointer; }
+        .om-bar button:hover { background: rgba(121,237,216,.3); }
+        .om-stage { flex: 1; min-height: 0; position: relative; }
+        .om-stage svg { width: 100%; height: 100%; display: block; }
+        .om-edge  { stroke: rgba(168,186,219,.35); stroke-width: 1; }
+        .om-node  { fill: #79edd8; }
+        .om-node-bg { fill: rgba(10,20,36,.85); stroke: rgba(121,237,216,.55); stroke-width: 1; }
+        .om-label { font-size: 10px; fill: #e8f6f2; pointer-events: none; }
+        .om-status { position: absolute; bottom: 6px; left: 12px; font-size: 10px; opacity: .55; }
+        .om-empty  { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: .55; font-size: 12px; padding: 20px; text-align: center; }
+      `
+      parent.appendChild(style)
+
+      const root = document.createElement("div")
+      root.className = "om-root"
+      parent.appendChild(root)
+
+      const bar = document.createElement("div")
+      bar.className = "om-bar"
+      root.appendChild(bar)
+
+      const apiInput = document.createElement("input")
+      apiInput.type = "url"
+      apiInput.placeholder = "Grafiti API URL"
+      apiInput.value = (localStorage.getItem("grafiti.api.base") || "http://localhost:8000").replace(/\/$/, "")
+      bar.appendChild(apiInput)
+
+      const reloadBtn = document.createElement("button")
+      reloadBtn.type = "button"
+      reloadBtn.textContent = "Reload"
+      bar.appendChild(reloadBtn)
+
+      const stage = document.createElement("div")
+      stage.className = "om-stage"
+      root.appendChild(stage)
+
+      const status = document.createElement("div")
+      status.className = "om-status"
+      status.textContent = "Loading..."
+      stage.appendChild(status)
+
+      const SVG_NS = "http://www.w3.org/2000/svg"
+      const svg = document.createElementNS(SVG_NS, "svg")
+      svg.setAttribute("preserveAspectRatio", "xMidYMid meet")
+      stage.appendChild(svg)
+
+      const empty = document.createElement("div")
+      empty.className = "om-empty"
+      empty.style.display = "none"
+      stage.appendChild(empty)
+
+      const apiBase = () => apiInput.value.trim().replace(/\/$/, "") || "http://localhost:8000"
+
+      function layout(nodes, width, height) {
+          const cx = width / 2, cy = height / 2
+          const radius = Math.max(40, Math.min(width, height) / 2 - 50)
+          const pos = new Map()
+          const n = Math.max(1, nodes.length)
+          nodes.forEach((id, i) => {
+              const a = (i / n) * Math.PI * 2 - Math.PI / 2
+              pos.set(id, { x: cx + Math.cos(a) * radius, y: cy + Math.sin(a) * radius })
+          })
+          return pos
+      }
+
+      function render(facts) {
+          svg.innerHTML = ""
+          empty.style.display = "none"
+          if (!facts.length) {
+              empty.style.display = "flex"
+              empty.textContent = "No facts in graph yet. Ingest an episode via POST /episodes."
+              return
+          }
+
+          const nodeIds = []
+          const seen = new Set()
+          for (const f of facts) {
+              for (const k of [f.source_node_name, f.target_node_name]) {
+                  if (k && !seen.has(k)) { seen.add(k); nodeIds.push(k) }
+              }
+          }
+
+          const rect = stage.getBoundingClientRect()
+          const w = Math.max(220, rect.width)
+          const h = Math.max(160, rect.height - 18)
+          svg.setAttribute("viewBox", `0 0 ${w} ${h}`)
+
+          const pos = layout(nodeIds, w, h)
+
+          for (const f of facts) {
+              const a = pos.get(f.source_node_name)
+              const b = pos.get(f.target_node_name)
+              if (!a || !b) continue
+              const line = document.createElementNS(SVG_NS, "line")
+              line.setAttribute("x1", a.x); line.setAttribute("y1", a.y)
+              line.setAttribute("x2", b.x); line.setAttribute("y2", b.y)
+              line.setAttribute("class", "om-edge")
+              const title = document.createElementNS(SVG_NS, "title")
+              title.textContent = f.fact || ""
+              line.appendChild(title)
+              svg.appendChild(line)
+          }
+
+          for (const id of nodeIds) {
+              const p = pos.get(id)
+              const labelText = id.length > 18 ? id.slice(0, 17) + "…" : id
+              const labelW = labelText.length * 6 + 14
+              const bg = document.createElementNS(SVG_NS, "rect")
+              bg.setAttribute("x", p.x - labelW / 2)
+              bg.setAttribute("y", p.y - 9)
+              bg.setAttribute("width", labelW)
+              bg.setAttribute("height", 18)
+              bg.setAttribute("rx", 9)
+              bg.setAttribute("class", "om-node-bg")
+              const t = document.createElementNS(SVG_NS, "text")
+              t.setAttribute("x", p.x)
+              t.setAttribute("y", p.y + 3)
+              t.setAttribute("text-anchor", "middle")
+              t.setAttribute("class", "om-label")
+              t.textContent = labelText
+              const title = document.createElementNS(SVG_NS, "title")
+              title.textContent = id
+              bg.appendChild(title)
+              svg.appendChild(bg)
+              svg.appendChild(t)
+          }
+
+          status.textContent = `${nodeIds.length} nodes · ${facts.length} edges · ${new Date().toLocaleTimeString()}`
+      }
+
+      let aborter = null
+      async function load() {
+          if (aborter) aborter.abort()
+          aborter = new AbortController()
+          status.textContent = "Loading..."
+          empty.style.display = "none"
+          try {
+              const url = `${apiBase()}/graph/latest?limit=15`
+              const res = await fetch(url, { signal: aborter.signal, credentials: "omit" })
+              if (!res.ok) throw new Error(`HTTP ${res.status}`)
+              const facts = await res.json()
+              render(Array.isArray(facts) ? facts : [])
+          } catch (e) {
+              if (e.name === "AbortError") return
+              svg.innerHTML = ""
+              empty.style.display = "flex"
+              empty.textContent = `Cannot reach ${apiBase()}/graph/latest — ${e.message || e}`
+              status.textContent = "Error"
+          }
+      }
+
+      reloadBtn.addEventListener("click", () => {
+          localStorage.setItem("grafiti.api.base", apiBase())
+          load()
+      })
+      apiInput.addEventListener("change", () => {
+          localStorage.setItem("grafiti.api.base", apiBase())
+          load()
+      })
+
+      const ro = ("ResizeObserver" in window) ? new ResizeObserver(() => {
+          if (svg.firstChild) {
+              const rect = stage.getBoundingClientRect()
+              svg.setAttribute("viewBox", `0 0 ${Math.max(220, rect.width)} ${Math.max(160, rect.height - 18)}`)
+          }
+      }) : null
+      if (ro) ro.observe(stage)
+
+      load()
+      const timer = setInterval(load, 30000)
+
+      return () => {
+          clearInterval(timer)
+          if (aborter) aborter.abort()
+          if (ro) ro.disconnect()
+      }
+    }
+rows: 4
+schema: space-widget/v1

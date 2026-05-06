@@ -1,0 +1,44 @@
+.clock-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.clock-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2.5rem 3.5rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(121, 237, 216, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  color: #e8f6f2;
+}
+
+.clock-time {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #79edd8;
+  text-shadow: 0 0 18px rgba(121, 237, 216, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
+.clock-date {
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
+
+.clock-zone {
+  font-size: 0.85rem;
+  opacity: 0.55;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

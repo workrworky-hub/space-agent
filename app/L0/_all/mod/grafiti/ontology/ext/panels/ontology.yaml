@@ -1,0 +1,5 @@
+name: Ontology
+path: grafiti/ontology
+description: Live domain ontology emerged from the Graphiti knowledge graph. Source-tagged anchors, hub-aware shortest-path, interactive canvas.
+icon: schema
+color: "#79edd8"

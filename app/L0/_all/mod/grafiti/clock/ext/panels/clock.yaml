@@ -1,0 +1,5 @@
+name: Clock
+path: grafiti/clock
+description: Simple live clock showing the current local time, date, and timezone.
+icon: schedule
+color: "#79edd8"

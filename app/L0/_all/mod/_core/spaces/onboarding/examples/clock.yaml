@@ -1,0 +1,84 @@
+cols: 4
+id: clock
+name: Clock
+renderer: |-
+  async (parent) => {
+      parent.style.cssText = `
+        all: initial;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        font-family: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+        color: #e8f6f2;
+        border-radius: 20px;
+        background: radial-gradient(circle at 30% 20%, #18324f 0%, #0c1828 70%);
+        overflow: hidden;
+        user-select: none;
+      `
+
+      const card = document.createElement("div")
+      card.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 20px;
+        text-align: center;
+      `
+      parent.appendChild(card)
+
+      const timeEl = document.createElement("div")
+      timeEl.style.cssText = `
+        font-size: clamp(2.4rem, 7vw, 4.8rem);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        color: #79edd8;
+        text-shadow: 0 0 18px rgba(121, 237, 216, 0.35);
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      `
+      timeEl.textContent = "--:--:--"
+      card.appendChild(timeEl)
+
+      const dateEl = document.createElement("div")
+      dateEl.style.cssText = `
+        font-size: 0.95rem;
+        opacity: 0.85;
+      `
+      card.appendChild(dateEl)
+
+      const zoneEl = document.createElement("div")
+      zoneEl.style.cssText = `
+        font-size: 0.7rem;
+        opacity: 0.55;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      `
+      card.appendChild(zoneEl)
+
+      const tick = () => {
+        const now = new Date()
+        timeEl.textContent = now.toLocaleTimeString(undefined, { hour12: false })
+        dateEl.textContent = now.toLocaleDateString(undefined, {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        })
+        try {
+          zoneEl.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone || ""
+        } catch (_) {
+          zoneEl.textContent = ""
+        }
+      }
+
+      tick()
+      const timer = setInterval(tick, 1000)
+
+      return () => clearInterval(timer)
+    }
+rows: 3
+schema: space-widget/v1

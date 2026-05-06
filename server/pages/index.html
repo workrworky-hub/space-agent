@@ -3,36 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="application-name" content="Space Agent" />
-    <meta name="apple-mobile-web-app-title" content="Space Agent" />
-    <meta name="theme-color" content="#050816" />
+    <meta name="application-name" content="Lument" />
+    <meta name="apple-mobile-web-app-title" content="Lument" />
+    <meta name="theme-color" content="#05060c" />
     <meta
       name="description"
-      content="Browser-first AI agent runtime for building your own AI spaces, tools, and workflows directly in the browser."
+      content="Lument — a browser-first AI runtime for building your own spaces, tools, and workflows."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Space Agent" />
-    <meta property="og:title" content="Space Agent | Browser-First AI Agent Runtime" />
+    <meta property="og:site_name" content="Lument" />
+    <meta property="og:title" content="Lument | Browser-First AI Runtime" />
     <meta
       property="og:description"
-      content="Browser-first AI agent runtime for building your own AI spaces, tools, and workflows directly in the browser."
+      content="Lument — a browser-first AI runtime for building your own spaces, tools, and workflows."
     />
     <meta property="og:url" content="https://space-agent.ai/" />
     <meta property="og:image" content="https://space-agent.ai/pages/res/readme-banner.webp" />
     <meta property="og:image:type" content="image/webp" />
     <meta property="og:image:width" content="1774" />
     <meta property="og:image:height" content="887" />
-    <meta property="og:image:alt" content="Space Agent banner" />
+    <meta property="og:image:alt" content="Lument banner" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Space Agent | Browser-First AI Agent Runtime" />
+    <meta name="twitter:title" content="Lument | Browser-First AI Runtime" />
     <meta
       name="twitter:description"
-      content="Browser-first AI agent runtime for building your own AI spaces, tools, and workflows directly in the browser."
+      content="Lument — a browser-first AI runtime for building your own spaces, tools, and workflows."
     />
     <meta name="twitter:url" content="https://space-agent.ai/" />
     <meta name="twitter:image" content="https://space-agent.ai/pages/res/readme-banner.webp" />
-    <meta name="twitter:image:alt" content="Space Agent banner" />
-    <title>Space Agent</title>
+    <meta name="twitter:image:alt" content="Lument banner" />
+    <title>Lument</title>
+    <meta name="color-scheme" content="dark" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -41,12 +42,133 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <!-- SPACE_SINGLE_USER_ENTER_GUARD -->
+
+    <!-- Lument premium boot shell: instant-paint, gradient, refined splash -->
+    <style>
+      :root {
+        color-scheme: dark;
+        --lument-ink: #05060c;
+        --lument-ink-2: #0a0d18;
+        --lument-glow-1: rgba(122, 162, 255, 0.10);
+        --lument-glow-2: rgba(121, 237, 216, 0.07);
+        --lument-glow-3: rgba(180, 130, 255, 0.06);
+        --lument-accent: #c8b88a;
+      }
+      html, body { margin: 0; padding: 0; background: var(--lument-ink); }
+      body { min-height: 100vh; }
+      /* Premium ambient gradient layer painted directly on the html root, behind everything,
+         so it appears on the first frame and survives even before space-canvas.css loads. */
+      html::before {
+        content: "";
+        position: fixed; inset: 0; z-index: -10; pointer-events: none;
+        background:
+          radial-gradient(900px 600px at 12% 8%,  var(--lument-glow-1) 0%, transparent 60%),
+          radial-gradient(800px 700px at 88% 18%, var(--lument-glow-2) 0%, transparent 60%),
+          radial-gradient(1200px 900px at 50% 110%, var(--lument-glow-3) 0%, transparent 65%),
+          linear-gradient(180deg, var(--lument-ink-2) 0%, var(--lument-ink) 60%, #03040a 100%);
+      }
+      /* Subtle film grain for tactile premium feel; cheap CSS-only, no images. */
+      html::after {
+        content: "";
+        position: fixed; inset: 0; z-index: -9; pointer-events: none;
+        opacity: .035;
+        background-image:
+          radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px),
+          radial-gradient(rgba(255,255,255,.5) 1px, transparent 1px);
+        background-size: 3px 3px, 5px 5px;
+        background-position: 0 0, 1px 2px;
+        mix-blend-mode: overlay;
+      }
+      #space-boot {
+        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        background: transparent; z-index: 2147483647; pointer-events: none;
+        transition: opacity .15s ease;
+      }
+      #space-boot.is-hidden { opacity: 0; }
+      #space-boot::before {
+        content: "Lument";
+        position: absolute; top: calc(50% + 38px); left: 50%; transform: translateX(-50%);
+        font: 500 12px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: 0.45em; text-transform: uppercase;
+        color: rgba(245, 240, 220, 0.55);
+      }
+      #space-boot::after {
+        content: ""; width: 30px; height: 30px; border-radius: 50%;
+        border: 1.5px solid rgba(200, 184, 138, 0.18);
+        border-top-color: rgba(200, 184, 138, 0.85);
+        animation: lument-boot-spin 1.05s cubic-bezier(.4,.15,.3,1) infinite;
+      }
+      @keyframes lument-boot-spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        #space-boot::after { animation: none; }
+        #space-boot { transition: none; }
+      }
+    </style>
+
+    <!-- Parallelize the framework module graph instead of waterfalling on import discovery -->
+    <link rel="modulepreload" href="/mod/_core/framework/js/initFw.js" />
+    <link rel="modulepreload" href="/mod/_core/framework/js/extensions.js" />
+    <link rel="modulepreload" href="/mod/_core/framework/js/initializer.js" />
+    <link rel="modulepreload" href="/mod/_core/framework/js/runtime.js" />
+    <link rel="modulepreload" href="/mod/_core/framework/js/modals.js" />
+    <link rel="modulepreload" href="/mod/_core/framework/js/components.js" />
+    <link rel="modulepreload" href="/mod/_core/framework/js/icons.js" />
+    <link rel="modulepreload" href="/mod/_core/framework/js/confirmClick.js" />
+    <link rel="modulepreload" href="/mod/_core/framework/js/alpine.min.js" />
+
+    <link rel="preload" href="/mod/_core/framework/css/colors.css" as="style" />
+    <link rel="preload" href="/mod/_core/framework/css/index.css" as="style" />
+    <link rel="preload" href="/mod/_core/framework/css/modals.css" as="style" />
+
+    <!-- Prefetch the most-common SPA route views during idle time so the first
+         navigation between dashboard/spaces/agent/admin lands from cache.
+         Subsequent visits already use componentCache in components.js. -->
+    <link rel="prefetch" href="/mod/_core/dashboard/view.html" as="document" />
+    <link rel="prefetch" href="/mod/_core/spaces/view.html" as="document" />
+    <link rel="prefetch" href="/mod/_core/agent/view.html" as="document" />
+    <link rel="prefetch" href="/mod/_core/admin/view.html" as="document" />
+    <link rel="prefetch" href="/mod/_core/dashboard/dashboard.css" as="style" />
+    <link rel="prefetch" href="/mod/_core/spaces/spaces.css" as="style" />
+    <link rel="prefetch" href="/mod/_core/agent/agent.css" as="style" />
+
     <link rel="stylesheet" href="/mod/_core/framework/css/colors.css" />
     <link rel="stylesheet" href="/mod/_core/framework/css/index.css" />
     <link rel="stylesheet" href="/mod/_core/framework/css/modals.css" />
     <script type="module" src="/mod/_core/framework/js/initFw.js"></script>
   </head>
   <body class="app-page-router space-theme-canvas">
+    <div id="space-boot" aria-hidden="true"></div>
     <x-extension id="body/start"></x-extension>
+    <script>
+      // Hide the boot splash as soon as real content paints. Aggressive removal
+      // so cached navigations feel instant — short fade, immediate DOM removal.
+      (function () {
+        var boot = document.getElementById("space-boot");
+        if (!boot) return;
+        var removed = false;
+        var hide = function () {
+          if (removed) return;
+          removed = true;
+          boot.classList.add("is-hidden");
+          // Remove from DOM right away so it stops costing layout/paint;
+          // the opacity transition on the class still runs visually for ~150ms.
+          requestAnimationFrame(function () { boot.remove(); });
+        };
+        var ext = document.querySelector('x-extension[id="body/start"]');
+        if (ext && "MutationObserver" in window) {
+          var obs = new MutationObserver(function () {
+            if (ext.childElementCount > 0 || ext.shadowRoot) {
+              obs.disconnect();
+              hide();
+            }
+          });
+          obs.observe(ext, { childList: true, subtree: false });
+        }
+        // Tighter fallbacks: don't hold the splash longer than needed.
+        window.addEventListener("DOMContentLoaded", function () { setTimeout(hide, 250); });
+        window.addEventListener("load", function () { hide(); });
+        setTimeout(hide, 2500);
+      })();
+    </script>
   </body>
 </html>

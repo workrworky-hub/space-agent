@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/mod/grafiti/clock/clock.css" />
+  </head>
+  <body>
+    <section
+      class="space-panel clock-view"
+      x-data="$store.clock ?? {}"
+      x-init="$store.clock?.mount?.()"
+    >
+      <div class="clock-card">
+        <div class="clock-time" x-text="$store.clock?.time ?? '--:--:--'"></div>
+        <div class="clock-date" x-text="$store.clock?.date ?? ''"></div>
+        <div class="clock-zone" x-text="$store.clock?.zone ?? ''"></div>
+      </div>
+    </section>
+    <script type="module" src="/mod/grafiti/clock/clock.js"></script>
+  </body>
+</html>

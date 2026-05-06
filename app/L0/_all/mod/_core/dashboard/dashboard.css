@@ -111,3 +111,143 @@
     padding-top: 18px;
   }
 }
+
+/* ───────────────────────────────────────────────────────────────────
+   Lument dashboard — replace the framework starfield with a quiet,
+   sleek ambient gradient. Only applies when the dashboard view is
+   rendered, so the rest of the app keeps its existing backdrop.
+   ─────────────────────────────────────────────────────────────────── */
+
+/* Mute the framework starfield while the dashboard is on screen. */
+body:has(.dashboard-view) .space-backdrop { display: none !important; }
+
+/* Premium ambient layer — soft, editorial, no motion. */
+body:has(.dashboard-view)::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 800px at 18% 12%, rgba(140, 178, 255, 0.10) 0%, transparent 60%),
+    radial-gradient(1000px 900px at 82% 22%, rgba(200, 184, 138, 0.07) 0%, transparent 62%),
+    radial-gradient(1400px 1100px at 50% 120%, rgba(180, 130, 255, 0.06) 0%, transparent 65%),
+    linear-gradient(180deg, #0a0d18 0%, #06080f 55%, #03040a 100%);
+}
+
+/* Faint film grain — premium tactile feel without needing an image. */
+body:has(.dashboard-view)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -4;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+  background-size: 3px 3px, 5px 5px;
+  background-position: 0 0, 1px 2px;
+}
+
+/* ── Lument hero band ─────────────────────────────────────────────── */
+.lument-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.7rem;
+  margin: clamp(1rem, 3vw, 2rem) 0 clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1.5rem, 4vw, 3rem) 1.25rem clamp(1.75rem, 4vw, 3rem);
+  isolation: isolate;
+}
+
+/* Subtle sigil-style halo behind the wordmark — not an animation, just static glow */
+.lument-hero::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(220px, 32vw, 380px);
+  height: clamp(220px, 32vw, 380px);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle at center,
+    rgba(200, 184, 138, 0.08) 0%,
+    rgba(200, 184, 138, 0.025) 35%,
+    rgba(200, 184, 138, 0) 70%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+.lument-hero-eyebrow {
+  margin: 0;
+  font: 500 10.5px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(244, 240, 230, 0.5);
+  text-indent: 0.5em; /* compensate for the trailing tracking */
+}
+
+.lument-hero-title {
+  margin: 0;
+  font: 300 clamp(2.8rem, 7vw, 5rem)/0.92
+    "Cormorant Garamond", "Source Serif Pro", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  letter-spacing: -0.025em;
+  background: linear-gradient(180deg, #fbf6e6 0%, #e2d4a6 55%, #b9a877 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 36px rgba(200, 184, 138, 0.12);
+}
+
+.lument-hero-tagline {
+  margin: 0.2rem 0 0;
+  color: rgba(244, 240, 230, 0.6);
+  font: 400 clamp(0.9rem, 1.1vw, 1rem)/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: 0.01em;
+  max-width: 36rem;
+}
+
+.lument-hero-divider {
+  width: clamp(72px, 14vw, 120px);
+  height: 1px;
+  margin-top: 0.5rem;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(200, 184, 138, 0.5) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 0 8px rgba(200, 184, 138, 0.2);
+}
+
+/* Refine the existing section title gradient to match the gold accent */
+.dashboard-section-title::before,
+.dashboard-section-title::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(200, 184, 138, 0.06) 26%,
+    rgba(200, 184, 138, 0.22) 58%,
+    rgba(200, 184, 138, 0.5) 100%
+  ) !important;
+  box-shadow: 0 0 6px rgba(200, 184, 138, 0.08) !important;
+}
+.dashboard-section-title::after {
+  background: linear-gradient(
+    90deg,
+    rgba(200, 184, 138, 0.5) 0%,
+    rgba(200, 184, 138, 0.22) 42%,
+    rgba(200, 184, 138, 0.06) 74%,
+    transparent 100%
+  ) !important;
+}
+.dashboard-section-title {
+  letter-spacing: 0.32em !important;
+  font-weight: 500 !important;
+  color: rgba(244, 240, 230, 0.78);
+}

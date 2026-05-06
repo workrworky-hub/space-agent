@@ -1,0 +1,228 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/mod/grafiti/ontology/ontology.css" />
+    <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+  </head>
+  <body>
+    <section
+      class="space-panel ontology-view"
+      x-data="$store.ontology ?? {}"
+      x-init="$store.ontology?.mount?.($refs)"
+    >
+      <template x-inject='[id="_core/onscreen_menu/bar_start"]'>
+        <div class="ontology-topbar-controls">
+          <button
+            class="ontology-topbar-button"
+            type="button"
+            x-on:click="$store.ontology?.run?.()"
+            x-bind:disabled="!$store.ontology?.connected || $store.ontology?.busy"
+            title="Re-run ontology query"
+          >
+            <span aria-hidden="true">&#x21bb;</span>
+            <span class="ontology-topbar-button-label">Run</span>
+          </button>
+          <button
+            class="ontology-topbar-button"
+            type="button"
+            x-on:click="$store.ontology?.fitView?.()"
+            x-bind:disabled="!$store.ontology?.connected"
+            title="Fit graph to view"
+          >
+            <span aria-hidden="true">&#x2316;</span>
+            <span class="ontology-topbar-button-label">Fit</span>
+          </button>
+          <button
+            class="ontology-topbar-button"
+            type="button"
+            x-on:click="$store.ontology?.disconnect?.()"
+            x-bind:disabled="!$store.ontology?.connected"
+            title="Disconnect from Neo4j"
+          >
+            <span aria-hidden="true">&#x2715;</span>
+            <span class="ontology-topbar-button-label">Disconnect</span>
+          </button>
+        </div>
+      </template>
+
+      <div class="ontology-shell">
+        <!-- Connection prompt -->
+        <template x-if="!$store.ontology?.connected">
+          <form
+            class="ontology-connect-card"
+            x-on:submit.prevent="$store.ontology?.connect?.()"
+          >
+            <h2 class="ontology-card-title">Connect to Neo4j</h2>
+            <p class="ontology-card-copy">
+              The ontology widget reads the Graphiti knowledge graph directly.
+              Provide your Neo4j HTTP endpoint, username, and password. Direct
+              browser access is tried first; on CORS failure the Space Agent
+              backend proxy takes over automatically.
+            </p>
+            <label class="ontology-field">
+              <span>Neo4j HTTP URL</span>
+              <input
+                type="url"
+                x-model="$store.ontology.config.httpUrl"
+                placeholder="http://localhost:7474"
+                required
+              />
+            </label>
+            <div class="ontology-field-row">
+              <label class="ontology-field">
+                <span>Database</span>
+                <input
+                  type="text"
+                  x-model="$store.ontology.config.database"
+                  placeholder="neo4j"
+                />
+              </label>
+              <label class="ontology-field">
+                <span>Username</span>
+                <input
+                  type="text"
+                  x-model="$store.ontology.config.username"
+                  autocomplete="username"
+                  placeholder="neo4j"
+                  required
+                />
+              </label>
+            </div>
+            <label class="ontology-field">
+              <span>Password</span>
+              <input
+                type="password"
+                x-model="$store.ontology.config.password"
+                autocomplete="current-password"
+                required
+              />
+            </label>
+            <button class="ontology-primary-button" type="submit" x-bind:disabled="$store.ontology.busy">
+              <span x-show="!$store.ontology.busy">Connect</span>
+              <span x-show="$store.ontology.busy">Connecting&hellip;</span>
+            </button>
+            <p
+              class="ontology-status ontology-status-error"
+              x-show="$store.ontology?.error"
+              x-text="$store.ontology?.error"
+            ></p>
+          </form>
+        </template>
+
+        <!-- Connected workspace -->
+        <template x-if="$store.ontology?.connected">
+          <div class="ontology-workspace">
+            <aside class="ontology-sidebar">
+              <header class="ontology-sidebar-header">
+                <h2>Source tags</h2>
+                <p class="ontology-sidebar-copy">
+                  Anchors of the ontology. Toggle to include or exclude.
+                </p>
+              </header>
+              <ul class="ontology-tag-list">
+                <template x-for="tag in $store.ontology.tags" :key="tag.source_id">
+                  <li class="ontology-tag-row">
+                    <label class="ontology-tag-label">
+                      <input
+                        type="checkbox"
+                        x-bind:value="tag.source_id"
+                        x-bind:checked="$store.ontology.selected.has(tag.source_id)"
+                        x-on:change="$store.ontology.toggleTag(tag.source_id)"
+                      />
+                      <span
+                        class="ontology-tag-swatch"
+                        x-bind:style="{ background: $store.ontology.palette[tag.source_id] || '#7ddcff' }"
+                      ></span>
+                      <span class="ontology-tag-name" x-text="tag.source_id"></span>
+                      <span class="ontology-tag-count" x-text="tag.node_count"></span>
+                    </label>
+                  </li>
+                </template>
+                <template x-if="!$store.ontology.tags.length">
+                  <li class="ontology-tag-empty">
+                    No <code>source_id</code> tags found in the graph. Ingest some
+                    Graphiti episodes with the source-triplet metadata first.
+                  </li>
+                </template>
+              </ul>
+
+              <header class="ontology-sidebar-header">
+                <h2>Controls</h2>
+              </header>
+              <label class="ontology-control">
+                <span>Path depth: <strong x-text="$store.ontology.maxHops"></strong></span>
+                <input
+                  type="range"
+                  min="1"
+                  max="6"
+                  step="1"
+                  x-model.number="$store.ontology.maxHops"
+                />
+              </label>
+              <label class="ontology-control">
+                <span>Layout</span>
+                <select x-model="$store.ontology.layout">
+                  <option value="physics">Force-directed</option>
+                  <option value="hierarchical">Hierarchical</option>
+                </select>
+              </label>
+              <label class="ontology-control ontology-control-inline">
+                <input
+                  type="checkbox"
+                  x-bind:checked="$store.ontology.hideHubs"
+                  x-on:change="$store.ontology.toggleHideHubs()"
+                />
+                <span>Hide hubs (degree-flagged)</span>
+              </label>
+              <button
+                class="ontology-primary-button"
+                type="button"
+                x-on:click="$store.ontology.run()"
+                x-bind:disabled="$store.ontology.busy || $store.ontology.selected.size < 2"
+              >
+                <span x-show="!$store.ontology.busy">Run ontology query</span>
+                <span x-show="$store.ontology.busy">Running&hellip;</span>
+              </button>
+              <p
+                class="ontology-status"
+                x-show="$store.ontology.statusMessage"
+                x-text="$store.ontology.statusMessage"
+              ></p>
+              <p
+                class="ontology-status ontology-status-error"
+                x-show="$store.ontology.error"
+                x-text="$store.ontology.error"
+              ></p>
+            </aside>
+
+            <div class="ontology-canvas-wrapper">
+              <div x-ref="canvas" class="ontology-canvas"></div>
+              <template x-if="$store.ontology.selectedNode">
+                <div class="ontology-inspect">
+                  <h3 class="ontology-inspect-title" x-text="$store.ontology.selectedNode.name"></h3>
+                  <dl class="ontology-inspect-grid">
+                    <dt>source_id</dt>
+                    <dd x-text="$store.ontology.selectedNode.sourceId || '—'"></dd>
+                    <dt>labels</dt>
+                    <dd x-text="(($store.ontology.selectedNode.labels || []).join(', ')) || '—'"></dd>
+                    <dt>connections</dt>
+                    <dd x-text="$store.ontology.selectedNode.connections"></dd>
+                    <dt>triplet</dt>
+                    <dd>
+                      <span x-text="$store.ontology.selectedNode.properties?.triplet_subject || '—'"></span>
+                      <span class="ontology-inspect-arrow">&rarr;</span>
+                      <span x-text="$store.ontology.selectedNode.properties?.triplet_predicate || '—'"></span>
+                      <span class="ontology-inspect-arrow">&rarr;</span>
+                      <span x-text="$store.ontology.selectedNode.properties?.triplet_object || '—'"></span>
+                    </dd>
+                  </dl>
+                  <p class="ontology-inspect-summary" x-show="$store.ontology.selectedNode.summary" x-text="$store.ontology.selectedNode.summary"></p>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </section>
+    <script type="module" src="/mod/grafiti/ontology/ontology.js"></script>
+  </body>
+</html>

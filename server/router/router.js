@@ -110,8 +110,18 @@ async function handleApiModuleRequest(req, res, requestUrl, apiModule, contextOp
   } catch (error) {
     const statusCode = Number(error && error.statusCode) || 500;
 
-    console.error(`[api] ${methodName} /api/${apiModule.endpointName} failed (${statusCode}).`);
-    console.error(error?.cause || error);
+    if (statusCode >= 500) {
+      // Real server bug: keep the full stack so it can be debugged.
+      console.error(`[api] ${methodName} /api/${apiModule.endpointName} failed (${statusCode}).`);
+      console.error(error?.cause || error);
+    } else {
+      // Expected client-side outcome (404 missing optional file, 401, 403, 400, ...).
+      // Log one concise line without a stack trace.
+      const message = String(error?.message || "").split("\n")[0];
+      console.warn(
+        `[api] ${methodName} /api/${apiModule.endpointName} -> ${statusCode}${message ? ` (${message})` : ""}`
+      );
+    }
 
     sendJson(res, statusCode, {
       error: statusCode >= 500 ? "Internal server error" : error.message

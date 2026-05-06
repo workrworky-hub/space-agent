@@ -3861,7 +3861,7 @@ const spacesModel = {
       return;
     }
 
-    const rect = this.refs.canvas.getBoundingClientRect();
+    const rect = this.layoutInteraction?.canvasRect || this.refs.canvas.getBoundingClientRect();
     const computeDelta = (distancePastEdge) => {
       const ratio = Math.min(1, Math.max(0, distancePastEdge / GRID_EDGE_SCROLL_THRESHOLD));
       return Math.max(0, Math.round(ratio * ratio * GRID_EDGE_SCROLL_SPEED));
@@ -3932,6 +3932,7 @@ const spacesModel = {
     toggleGridOverlay(this.refs.grid, true, gridMetrics, this.cameraOffsetPx);
 
     this.layoutInteraction = {
+      canvasRect: this.refs.canvas.getBoundingClientRect(),
       gridMetrics,
       originPosition: layoutPosition,
       pointerId: event.pointerId,
@@ -3986,6 +3987,7 @@ const spacesModel = {
     const originFrame = getWidgetCardFrame(layoutPosition, storedSize, this.currentCanvasBounds, gridMetrics);
 
     this.layoutInteraction = {
+      canvasRect: this.refs.canvas.getBoundingClientRect(),
       gridMetrics,
       originFrame,
       originPosition: layoutPosition,
